@@ -39,7 +39,7 @@
   .t{font-weight:600;color:var(--navy)}
   .meta{color:var(--muted);font-size:12.5px}
   .b{font-size:11px;padding:1px 7px;border-radius:9px;background:#eef1f6;color:#3a4558;font-weight:600;margin-right:4px;white-space:nowrap}
-  .b.late{background:#fdecea;color:var(--red)} .b.ai{background:#efe8fb;color:#5b2ea6}
+  .b.ai{background:#efe8fb;color:#5b2ea6}
   .score{font-size:16px;font-weight:700}
   .bar{height:6px;background:#e3e7ee;border-radius:3px;width:90px;margin-top:4px;overflow:hidden}
   .bar i{display:block;height:100%;background:var(--blue)}
@@ -80,16 +80,14 @@
       <button class="btn ghost" id="refresh">Refresh</button>
       <button class="btn" id="csv">Export CSV</button>
     </div>
-    <div class="meta" style="margin-bottom:8px" id="wnote"></div>
     <div style="overflow:auto">
     <table id="tbl"><thead><tr>
       <th data-sort="rank">#</th><th data-sort="title">Session</th><th data-sort="topic">Topic</th>
-      <th data-sort="avg" class="n">Weighted avg</th><th data-sort="relevance" class="n">Relev.</th><th data-sort="education" class="n">Educ.</th>
-      <th data-sort="neutrality" class="n">Neutral</th><th data-sort="timeliness" class="n">Timely</th>
-      <th data-sort="mustPct">Must / Consider / Pass</th><th data-sort="n" class="n">Reviews</th><th data-sort="spread" class="n">Spread</th>
+      <th data-sort="avg" class="n">Avg rating</th>
+      <th data-sort="mustPct">Must / Consider / Pass</th><th data-sort="n" class="n">Ratings</th><th data-sort="spread" class="n">Spread</th>
     </tr></thead><tbody></tbody></table>
     </div>
-    <p class="meta">Ranked by weighted average (recused and incomplete scores excluded); ties broken by number of “Must Include” votes. Green bar = inside the agenda-slot cut line. Spread = highest minus lowest reviewer score (large spread = committee disagrees; discuss). Click a row for reviewer detail, comments, and Tony’s review flags.</p>
+    <p class="meta">Ranked by average 1–5 rating (recused reviewers excluded); ties broken by number of “Must Include” votes, then fewest “Pass”. Sort by any column by clicking its header. Green bar = inside the agenda-slot cut line. Spread = highest minus lowest reviewer score (large spread = committee disagrees; discuss). Click a row for reviewer detail, comments, and Tony’s review flags.</p>
   </div>
   <div class="panel">
     <h2>Reviewer progress</h2>
@@ -99,7 +97,6 @@
 
 <script>
 const sb = supabase.createClient('https://hktzvlkrimpfreeoehsi.supabase.co', 'sb_publishable_IiktW4Ks_6W1T6HqB-EyVA_htFUOyGQ');
-const CR = ['relevance','education','neutrality','timeliness'];
 const $ = id => document.getElementById(id);
 const esc = s => (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let data = null, rows = [], sortKey = 'rank', sortDir = 1, open = new Set();
@@ -132,8 +129,6 @@ async function load(){
   const {data:d, error} = await sb.rpc('session_review_results');
   if (error){ alert(error.message); return; }
   data = d;
-  const w = d.weights;
-  $('wnote').textContent = `Weights: Telecom Relevance ${w.relevance*100}% · Educational Value ${w.education*100}% · Vendor-Neutral ${w.neutrality*100}% · Timeliness ${w.timeliness*100}%`;
   const topics = [...new Set(d.sessions.map(s => s.topic))];
   $('topic').innerHTML = '<option value="">All</option>' + topics.map(t => `<option>${esc(t)}</option>`).join('');
   compute(); draw(); reviewers();
@@ -141,17 +136,14 @@ async function load(){
 
 const avg = a => a.length ? a.reduce((x,y) => x+y, 0) / a.length : null;
 function compute(){
-  const w = data.weights;
   rows = data.sessions.map(s => {
     const all = data.scores.filter(x => x.session_id === s.id);
-    const full = all.filter(x => !x.recused && CR.every(k => x[k]));
-    const ws = full.map(x => CR.reduce((t,k) => t + w[k]*x[k], 0));
-    const r = {...s, all, full, n: full.length, recused: all.filter(x => x.recused).length,
-      avg: avg(ws), spread: ws.length > 1 ? Math.max(...ws) - Math.min(...ws) : null,
+    const rated = all.filter(x => !x.recused && x.rating).map(x => x.rating);
+    const r = {...s, all, n: rated.length, recused: all.filter(x => x.recused).length,
+      avg: avg(rated), spread: rated.length > 1 ? Math.max(...rated) - Math.min(...rated) : null,
       must: all.filter(x => !x.recused && x.recommendation === 'Must Include').length,
       consider: all.filter(x => !x.recused && x.recommendation === 'Consider').length,
       pass: all.filter(x => !x.recused && x.recommendation === 'Pass').length};
-    CR.forEach(k => r[k] = avg(full.map(x => x[k])));
     const votes = r.must + r.consider + r.pass; r.mustPct = votes ? r.must / votes : -1;
     return r;
   });
@@ -172,10 +164,9 @@ function draw(){
     return `<tr class="row ${inside?'in':''} ${cut?'cut':''}" data-id="${r.id}">
       <td class="rank">${r.rank ?? '—'}</td>
       <td><div class="t">${esc(r.title)}</div><div class="meta">${esc(r.speaker)} · ${esc(r.organization)}</div>
-        <div style="margin-top:3px"><span class="b">${esc(r.timing)}</span><span class="b">${esc(r.formats)}</span>${r.late?'<span class="b late">Late</span>':''}${r.ai_focus?'<span class="b ai">AI</span>':''}</div></td>
+        <div style="margin-top:3px"><span class="b">${esc(r.timing)}</span><span class="b">${esc(r.formats)}</span>${r.ai_focus?'<span class="b ai">AI</span>':''}</div></td>
       <td class="meta">${esc(r.topic)}</td>
       <td class="n"><span class="score">${f2(r.avg)}</span><div class="bar"><i style="width:${r.avg?(r.avg/5*100):0}%"></i></div></td>
-      ${CR.map(k => `<td class="n">${f2(r[k])}</td>`).join('')}
       <td class="recs"><span class="rM">${r.must}</span><span class="rC">${r.consider}</span><span class="rP">${r.pass}</span></td>
       <td class="n">${r.n}${r.recused?` <span class="meta">(+${r.recused} rec.)</span>`:''}</td>
       <td class="n">${f2(r.spread)}</td></tr>
@@ -188,18 +179,17 @@ function draw(){
   $('kpis').innerHTML = `
     <div class="kpi"><div class="v">${data.sessions.length}</div><div class="l">Proposals under review</div></div>
     <div class="kpi"><div class="v">${reviewers}</div><div class="l">Committee members participating</div></div>
-    <div class="kpi"><div class="v">${scored}</div><div class="l">Sessions with at least one full score</div></div>
+    <div class="kpi"><div class="v">${scored}</div><div class="l">Sessions with at least one rating</div></div>
     <div class="kpi"><div class="v">${top && top.avg ? f2(top.avg) : '—'}</div><div class="l">Top score${top && top.avg ? ' · ' + esc(top.title.slice(0,40)) + (top.title.length>40?'…':'') : ''}</div></div>`;
 }
 
 function detail(r){
-  return `<tr class="detail"><td></td><td colspan="10">
+  return `<tr class="detail"><td></td><td colspan="6">
     ${r.review_flags ? `<div class="flags"><b>Review flags:</b> ${esc(r.review_flags)}</div>` : ''}
-    <div class="meta" style="margin-bottom:6px"><b>Topics:</b> ${esc(r.content_tags)} · Submitted ${esc((r.submitted_at||'').slice(0,10))}</div>
-    ${r.all.length ? `<table class="sub"><tr><th>Reviewer</th><th class="n">Relev.</th><th class="n">Educ.</th><th class="n">Neutral</th><th class="n">Timely</th><th class="n">Weighted</th><th>Call</th><th>Comment</th></tr>
-    ${r.all.map(x => { const ok = !x.recused && CR.every(k => x[k]); const wv = ok ? CR.reduce((t,k) => t + data.weights[k]*x[k], 0) : null;
-      return `<tr><td>${esc(x.reviewer_name)}</td>${x.recused ? '<td colspan="6" class="meta">Recused</td>' :
-      CR.map(k => `<td class="n">${x[k] ?? '—'}</td>`).join('') + `<td class="n"><b>${f2(wv)}</b></td><td>${esc(x.recommendation || '—')}</td>`}<td>${esc(x.comment || '')}</td></tr>`; }).join('')}</table>`
+    <div class="meta" style="margin-bottom:6px"><b>Topics:</b> ${esc(r.content_tags)}</div>
+    ${r.all.length ? `<table class="sub"><tr><th>Reviewer</th><th class="n">Rating</th><th>Call</th><th>Comment</th></tr>
+    ${r.all.map(x => `<tr><td>${esc(x.reviewer_name)}</td>${x.recused ? '<td colspan="2" class="meta">Recused</td>' :
+      `<td class="n"><b>${x.rating ?? '—'}</b></td><td>${esc(x.recommendation || '—')}</td>`}<td>${esc(x.comment || '')}</td></tr>`).join('')}</table>`
     : '<div class="meta">No scores yet.</div>'}
   </td></tr>`;
 }
@@ -207,7 +197,7 @@ function detail(r){
 function reviewers(){
   const m = {};
   data.scores.forEach(x => { const r = m[x.reviewer_key] ||= {name:x.reviewer_name, done:0, rec:0, last:x.updated_at};
-    if (x.recused) r.rec++; else if (CR.every(k => x[k]) && x.recommendation) r.done++;
+    if (x.recused) r.rec++; else if (x.rating && x.recommendation) r.done++;
     if (x.updated_at > r.last) r.last = x.updated_at; });
   const total = data.sessions.length, list = Object.values(m).sort((a,b) => a.name.localeCompare(b.name));
   $('revs').innerHTML = '<tr><th>Reviewer</th><th class="n">Scored</th><th class="n">Recused</th><th class="n">Remaining</th><th>Last activity</th></tr>' +
@@ -217,9 +207,9 @@ function reviewers(){
 
 function csv(){
   const q = v => `"${(v ?? '').toString().replace(/"/g,'""')}"`;
-  const head = ['Rank','Title','Speaker','Organization','Topic','Formats','Timing','Late','AI Focus','Weighted Avg','Relevance','Education','Vendor-Neutral','Timeliness','Must Include','Consider','Pass','Reviews','Recused','Spread','Review Flags','Comments'];
-  const lines = rows.map(r => [r.rank, r.title, r.speaker, r.organization, r.topic, r.formats, r.timing, r.late?'Yes':'No', r.ai_focus?'Yes':'No',
-    f2(r.avg), f2(r.relevance), f2(r.education), f2(r.neutrality), f2(r.timeliness), r.must, r.consider, r.pass, r.n, r.recused, f2(r.spread), r.review_flags,
+  const head = ['Rank','Title','Speaker','Organization','Topic','Formats','Timing','AI Focus','Avg Rating','Must Include','Consider','Pass','Ratings','Recused','Spread','Review Flags','Comments'];
+  const lines = rows.map(r => [r.rank, r.title, r.speaker, r.organization, r.topic, r.formats, r.timing, r.ai_focus?'Yes':'No',
+    f2(r.avg), r.must, r.consider, r.pass, r.n, r.recused, f2(r.spread), r.review_flags,
     r.all.filter(x => x.comment).map(x => `${x.reviewer_name}: ${x.comment}`).join(' | ')].map(q).join(','));
   const blob = new Blob(['﻿' + [head.map(q).join(','), ...lines].join('\r\n')], {type:'text/csv'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'TRMA_Spring_2027_Session_Rankings.csv'; a.click();

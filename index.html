@@ -11,25 +11,20 @@
   *{box-sizing:border-box}
   body{margin:0;font-family:Segoe UI,system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45}
   header{background:var(--navy);color:#fff;padding:18px 20px}
-  header .wrap{max-width:980px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  header .wrap{max-width:980px;margin:0 auto}
   header h1{margin:0;font-size:20px;font-weight:600}
   header .sub{opacity:.8;font-size:13px}
   main{max-width:980px;margin:0 auto;padding:20px}
   .panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:16px}
   label.f{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}
-  input[type=text],input[type=email],input[type=password],textarea,select{width:100%;padding:9px 10px;border:1px solid #b9c2d0;border-radius:6px;font:inherit;font-size:14px}
-  textarea{min-height:60px;resize:vertical}
+  input[type=text],textarea,select{width:100%;padding:9px 10px;border:1px solid #b9c2d0;border-radius:6px;font:inherit;font-size:14px}
+  textarea{min-height:54px;resize:vertical}
   button{font:inherit;cursor:pointer}
   .btn{background:var(--blue);color:#fff;border:0;border-radius:6px;padding:10px 18px;font-weight:600}
-  .btn:disabled{opacity:.5;cursor:default}
-  .btn.ghost{background:#fff;color:var(--blue);border:1px solid var(--blue)}
-  .err{color:var(--red);font-size:14px;margin-top:8px}
-  .rubric{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:10px}
-  .rubric div{background:var(--sky);border-radius:8px;padding:10px 12px;font-size:13px}
-  .rubric b{display:block;color:var(--navy)}
   .bar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:10px 20px;box-shadow:0 2px 6px rgba(0,0,0,.04)}
   .bar .wrap{max-width:980px;margin:0 auto;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-  .prog{flex:1;min-width:180px}
+  .bar #rName{width:230px}
+  .prog{flex:1;min-width:160px}
   .prog .track{height:8px;background:#e3e7ee;border-radius:4px;overflow:hidden}
   .prog .fill{height:100%;background:var(--green);width:0;transition:width .3s}
   .prog small{color:var(--muted)}
@@ -43,80 +38,56 @@
   .badges{margin:8px 0;display:flex;flex-wrap:wrap;gap:6px}
   .b{font-size:11.5px;padding:2px 8px;border-radius:10px;background:#eef1f6;color:#3a4558;font-weight:600}
   .b.topic{background:var(--sky);color:var(--blue)}
-  .b.late{background:#fdecea;color:var(--red)}
   .b.ai{background:#efe8fb;color:#5b2ea6}
   .b.ok{background:#e6f4ec;color:var(--green)}
   .desc{font-size:14px;margin:6px 0 4px;white-space:pre-line}
   .desc.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .more{background:none;border:0;color:var(--blue);padding:0;font-size:13px;font-weight:600}
-  .tags{font-size:12.5px;color:var(--muted);margin-top:4px}
-  .score{display:grid;grid-template-columns:1fr auto;gap:8px 16px;align-items:center;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
-  .crit{font-size:14px;font-weight:600}
-  .crit small{display:block;font-weight:400;color:var(--muted);font-size:12px}
-  .seg{display:inline-flex;justify-self:start;border:1px solid #b9c2d0;border-radius:6px;overflow:hidden}
-  .seg button{border:0;background:#fff;width:38px;height:34px;font-weight:600;color:#3a4558;border-right:1px solid #e1e5ec}
+  .score{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-end;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+  .q{font-size:13px;font-weight:600;margin-bottom:5px}
+  .seg{display:inline-flex;border:1px solid #b9c2d0;border-radius:6px;overflow:hidden}
+  .seg button{border:0;background:#fff;min-width:44px;height:38px;padding:0 12px;font-weight:600;color:#3a4558;border-right:1px solid #e1e5ec}
   .seg button:last-child{border-right:0}
   .seg button.on{background:var(--blue);color:#fff}
-  .rec button{width:auto;padding:0 12px}
+  .scale{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:3px}
   .rec button.on[data-v="Must Include"]{background:var(--green)}
   .rec button.on[data-v="Consider"]{background:var(--orange)}
   .rec button.on[data-v="Pass"]{background:var(--red)}
   .foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
-  .ws{font-size:14px}
-  .ws b{font-size:18px;color:var(--navy)}
   .recuse{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
-  .hidden{display:none}
-  @media (max-width:620px){.score{grid-template-columns:1fr}.seg button{width:44px}}
+  @media (max-width:620px){.bar #rName{width:100%}.seg button{min-width:0;padding:0 10px}}
 </style>
 </head>
 <body>
 <header><div class="wrap">
-  <div><h1>TRMA 2027 Spring Conference · Session Review</h1>
-  <div class="sub">Credit City Limits · Austin, TX · Feb 23–24, 2027 · Program Committee scoring</div></div>
-  
+  <h1>TRMA 2027 Spring Conference · Session Review</h1>
+  <div class="sub">Credit City Limits · Austin, TX · Feb 23–24, 2027 · Program Committee</div>
 </div></header>
 
-<div id="app">
-  <div class="bar"><div class="wrap">
-    <input type="text" id="rName" placeholder="Your name (required to save)" autocomplete="name" style="width:230px" aria-label="Your name">
-    <div class="prog"><div class="track"><div class="fill" id="pFill"></div></div><small id="pText"></small></div>
-    <select id="fTopic" aria-label="Filter by topic"><option value="">All topics</option></select>
-    <select id="fState" aria-label="Filter by status"><option value="">All sessions</option><option value="todo">Not finished</option><option value="done">Finished</option></select>
-    <div class="status" id="saveStatus"></div>
-  </div></div>
-  <main>
-    <div class="panel">
-      <h2 style="margin:0 0 6px;color:var(--navy);font-size:18px">How to score</h2>
-      <div class="meta">Rate each proposal 1 (poor) to 5 (excellent) on four criteria, then give an overall call. Your scores save automatically as you go — you can close this page and come back later on the same computer and browser to finish. Scores are combined into a weighted total (shown on each card) and averaged across the committee to build the agenda. If you work for, or have a business relationship with, the presenting company, check <b>Recuse</b> and skip it.</div>
-      <div class="rubric">
-        <div><b>Telecom Relevance · 30%</b>Directly useful to telecom/cable credit, fraud, or collections teams.</div>
-        <div><b>Educational Value · 30%</b>Clear, actionable takeaways attendees can use back at work.</div>
-        <div><b>Vendor-Neutral · 20%</b>Teaches the topic rather than pitching a product. 5 = no sales pitch.</div>
-        <div><b>Timeliness · 20%</b>Fresh, forward-looking; not something members heard last conference.</div>
-      </div>
-      <p class="meta" style="margin:10px 0 0">Badges: <span class="b late">Late</span> submitted after the Nov 12 deadline · <span class="b ai">AI focus</span> session centers on AI. Several proposals overlap — score each on its own merit and use comments to flag pairs that should not both make the agenda.</p>
-    </div>
-    <div id="list"><div class="panel meta">Loading sessions…</div></div>
-    <div class="panel" style="text-align:center">
-      <button class="btn" id="saveAll">Save all &amp; finish</button>
-      <div class="meta" id="finishMsg" style="margin-top:8px"></div>
-    </div>
-  </main>
-</div>
+<div class="bar"><div class="wrap">
+  <input type="text" id="rName" placeholder="Your name (required to save)" autocomplete="name" aria-label="Your name">
+  <div class="prog"><div class="track"><div class="fill" id="pFill"></div></div><small id="pText"></small></div>
+  <select id="fTopic" aria-label="Filter by topic"><option value="">All topics</option></select>
+  <select id="fState" aria-label="Filter by status"><option value="">All sessions</option><option value="todo">Not finished</option><option value="done">Finished</option></select>
+  <div class="status" id="saveStatus"></div>
+</div></div>
+
+<main>
+  <div class="panel">
+    <h2 style="margin:0 0 6px;color:var(--navy);font-size:18px">How to review</h2>
+    <div class="meta">Enter your name above, then for each session give it a <b>rating from 1 to 5</b> and an overall call: <b style="color:var(--green)">Must Include</b>, <b style="color:var(--orange)">Consider</b>, or <b style="color:var(--red)">Pass</b>. When rating, think about how useful it would be to telecom credit professionals and whether it teaches rather than sells. Comments are optional. If you have a conflict with the presenting company, check <b>Recuse</b>. Everything saves automatically — you can come back later on the same device to finish.</div>
+  </div>
+  <div id="list"><div class="panel meta">Loading sessions…</div></div>
+  <div class="panel" style="text-align:center">
+    <button class="btn" id="saveAll">Save all &amp; finish</button>
+    <div class="meta" id="finishMsg" style="margin-top:8px"></div>
+  </div>
+</main>
 
 <script>
-const SUPABASE_URL = 'https://hktzvlkrimpfreeoehsi.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_IiktW4Ks_6W1T6HqB-EyVA_htFUOyGQ';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {auth:{persistSession:false}});
-const W = {relevance:.30, education:.30, neutrality:.20, timeliness:.20};
-const CRITS = [
-  ['relevance','Telecom Relevance','Useful to telecom credit/fraud/collections'],
-  ['education','Educational Value','Actionable takeaways'],
-  ['neutrality','Vendor-Neutral','5 = no sales pitch'],
-  ['timeliness','Timeliness','Fresh & forward-looking']
-];
+const sb = supabase.createClient('https://hktzvlkrimpfreeoehsi.supabase.co', 'sb_publishable_IiktW4Ks_6W1T6HqB-EyVA_htFUOyGQ', {auth:{persistSession:false}});
 const RECS = ['Must Include','Consider','Pass'];
-let sessions = [], scores = {}, timers = {};
+let sessions = [], scores = {}, timers = {}, dirty = new Set(), pending = 0, nameTimer;
 const $ = id => document.getElementById(id);
 const esc = s => (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const store = { get(k){ try{return localStorage.getItem(k)}catch(e){return null} }, set(k,v){ try{localStorage.setItem(k,v)}catch(e){} } };
@@ -124,62 +95,56 @@ const store = { get(k){ try{return localStorage.getItem(k)}catch(e){return null}
 let KEY = store.get('sr_key');
 if (!KEY) { KEY = (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random()*16|0; return (c === 'x' ? r : (r&0x3|0x8)).toString(16); })); store.set('sr_key', KEY); }
 $('rName').value = store.get('sr_name') || '';
-let dirty = new Set(), nameTimer;
 $('rName').addEventListener('input', () => {
-  store.set('sr_name', $('rName').value.trim());
-  $('rName').style.borderColor = '';
+  store.set('sr_name', $('rName').value.trim()); $('rName').style.borderColor = '';
   clearTimeout(nameTimer);
   nameTimer = setTimeout(() => { if ($('rName').value.trim()) save(sessions.map(s => s.id).filter(id => hasData(scores[id]))); }, 800);
 });
 
+const hasData = s => s.recused || s.rating || s.recommendation || s.comment;
+const isDone = s => s.recused || (s.rating && s.recommendation);
+
 (async function init(){
   const [a, b] = await Promise.all([ sb.rpc('session_review_sessions'), sb.rpc('session_review_my_scores', {p_key: KEY}) ]);
-  if (a.error || b.error){ $('list').innerHTML = '<div class="panel err">Could not load sessions: ' + esc((a.error||b.error).message) + '</div>'; return; }
+  if (a.error || b.error){ $('list').innerHTML = '<div class="panel" style="color:var(--red)">Could not load sessions: ' + esc((a.error||b.error).message) + '</div>'; return; }
   sessions = a.data;
   (b.data || []).forEach(s => scores[s.session_id] = s);
   sessions.forEach(s => { if (!scores[s.id]) scores[s.id] = {session_id: s.id}; });
   [...new Set(sessions.map(s => s.topic))].forEach(t => $('fTopic').insertAdjacentHTML('beforeend', `<option>${esc(t)}</option>`));
   render(); progress();
-  if (b.data && b.data.length) setStatus('Welcome back — your scores are loaded');
+  if (b.data && b.data.length) setStatus('Welcome back — your ratings are loaded');
 })();
-
-const hasData = s => s.recused || CRITS.some(([k]) => s[k]) || s.recommendation || s.comment;
-const isDone = sc => sc.recused || (CRITS.every(([k]) => sc[k]) && sc.recommendation);
-const wscore = sc => CRITS.every(([k]) => sc[k]) ? CRITS.reduce((t,[k]) => t + W[k]*sc[k], 0) : null;
 
 function render(){
   const ft = $('fTopic').value, fs = $('fState').value;
-  $('list').innerHTML = sessions.filter(s => (!ft || s.topic === ft) && (!fs || (fs === 'done') === isDone(scores[s.id]))).map(s => {
+  $('list').innerHTML = sessions.filter(s => (!ft || s.topic === ft) && (!fs || (fs === 'done') === !!isDone(scores[s.id]))).map(s => {
     const sc = scores[s.id];
     return `<div class="card ${sc.recused?'recused':isDone(sc)?'done':''}" id="c${s.id}">
       <h3>${esc(s.title)}</h3>
       <div class="meta">${esc(s.speaker)} · ${esc(s.organization)}</div>
       <div class="badges">
         <span class="b topic">${esc(s.topic)}</span><span class="b">${esc(s.formats)}</span><span class="b">${esc(s.timing)}</span>
-        ${s.late?'<span class="b late">Late</span>':''}${s.ai_focus?'<span class="b ai">AI focus</span>':''}
-        <span class="b ok" id="d${s.id}" style="${isDone(sc)?'':'display:none'}">${sc.recused?'Recused':'Scored'}</span>
+        ${s.ai_focus?'<span class="b ai">AI focus</span>':''}
+        <span class="b ok" id="d${s.id}" style="${isDone(sc)?'':'display:none'}">${sc.recused?'Recused':'Done'}</span>
       </div>
       <div class="desc clamp" id="t${s.id}">${esc(s.description)}</div>
       <button class="more" data-more="${s.id}">Read full description</button>
-      <div class="tags"><b>Topics:</b> ${esc(s.content_tags)}</div>
-      <div class="score" id="sc${s.id}" style="${sc.recused?'display:none':''}">
-        ${CRITS.map(([k,l,h]) => `<div class="crit">${l}<small>${h}</small></div>
-          <div class="seg">${[1,2,3,4,5].map(v => `<button data-s="${s.id}" data-k="${k}" data-v="${v}" class="${sc[k]==v?'on':''}" aria-label="${l} ${v}">${v}</button>`).join('')}</div>`).join('')}
-        <div class="crit">Overall call<small>Should this make the agenda?</small></div>
-        <div class="seg rec">${RECS.map(r => `<button data-s="${s.id}" data-k="recommendation" data-v="${r}" class="${sc.recommendation===r?'on':''}">${r}</button>`).join('')}</div>
-      </div>
-      <div id="cm${s.id}" style="${sc.recused?'display:none':''}">
-        <label class="f" for="x${s.id}">Comments (optional — overlap, speaker quality, fit)</label>
+      <div id="sc${s.id}" style="${sc.recused?'display:none':''}">
+        <div class="score">
+          <div><div class="q">Rating</div>
+            <div class="seg">${[1,2,3,4,5].map(v => `<button data-s="${s.id}" data-k="rating" data-v="${v}" class="${sc.rating==v?'on':''}" aria-label="Rating ${v}">${v}</button>`).join('')}</div>
+            <div class="scale"><span>Poor</span><span>Excellent</span></div></div>
+          <div><div class="q">Overall call</div>
+            <div class="seg rec">${RECS.map(r => `<button data-s="${s.id}" data-k="recommendation" data-v="${r}" class="${sc.recommendation===r?'on':''}">${r}</button>`).join('')}</div>
+            <div class="scale">&nbsp;</div></div>
+        </div>
+        <label class="f" for="x${s.id}">Comments (optional)</label>
         <textarea id="x${s.id}" data-c="${s.id}">${esc(sc.comment)}</textarea>
       </div>
-      <div class="foot">
-        <label class="recuse"><input type="checkbox" data-r="${s.id}" ${sc.recused?'checked':''}> Recuse (conflict of interest)</label>
-        <div class="ws" id="w${s.id}">${wsHtml(sc)}</div>
-      </div>
+      <div class="foot"><label class="recuse"><input type="checkbox" data-r="${s.id}" ${sc.recused?'checked':''}> Recuse (conflict of interest)</label></div>
     </div>`;
   }).join('') || '<div class="panel meta">No sessions match this filter.</div>';
 }
-const wsHtml = sc => { const w = wscore(sc); return sc.recused ? '' : `Weighted score: <b>${w==null?'—':w.toFixed(2)}</b> / 5`; };
 
 $('fTopic').onchange = render; $('fState').onchange = render;
 
@@ -187,32 +152,30 @@ $('list').addEventListener('click', e => {
   const m = e.target.closest('[data-more]');
   if (m){ const t = $('t'+m.dataset.more); t.classList.toggle('clamp'); m.textContent = t.classList.contains('clamp') ? 'Read full description' : 'Show less'; return; }
   const b = e.target.closest('button[data-k]'); if (!b) return;
-  const id = +b.dataset.s, k = b.dataset.k, v = k === 'recommendation' ? b.dataset.v : +b.dataset.v;
+  const id = +b.dataset.s, k = b.dataset.k, v = k === 'rating' ? +b.dataset.v : b.dataset.v;
   const sc = scores[id];
   sc[k] = sc[k] === v ? null : v;
-  b.parentElement.querySelectorAll('button').forEach(x => x.classList.toggle('on', sc[k] === (k === 'recommendation' ? x.dataset.v : +x.dataset.v)));
+  b.parentElement.querySelectorAll('button').forEach(x => x.classList.toggle('on', sc[k] === (k === 'rating' ? +x.dataset.v : x.dataset.v)));
   touch(id);
 });
 $('list').addEventListener('input', e => { if (e.target.dataset.c){ scores[+e.target.dataset.c].comment = e.target.value; touch(+e.target.dataset.c, 900); } });
 $('list').addEventListener('change', e => {
   if (!e.target.dataset.r) return;
   const id = +e.target.dataset.r; scores[id].recused = e.target.checked;
-  $('sc'+id).style.display = $('cm'+id).style.display = e.target.checked ? 'none' : '';
+  $('sc'+id).style.display = e.target.checked ? 'none' : '';
   touch(id);
 });
 
 function touch(id, delay = 400){
   const sc = scores[id], card = $('c'+id);
-  card.classList.toggle('done', isDone(sc) && !sc.recused); card.classList.toggle('recused', !!sc.recused);
-  const d = $('d'+id); d.style.display = isDone(sc) ? '' : 'none'; d.textContent = sc.recused ? 'Recused' : 'Scored';
-  $('w'+id).innerHTML = wsHtml(sc);
+  card.classList.toggle('done', !!isDone(sc) && !sc.recused); card.classList.toggle('recused', !!sc.recused);
+  const d = $('d'+id); d.style.display = isDone(sc) ? '' : 'none'; d.textContent = sc.recused ? 'Recused' : 'Done';
   progress();
   clearTimeout(timers[id]); setStatus('Unsaved changes…');
   timers[id] = setTimeout(() => save([id]), delay);
 }
 
-const payload = id => { const s = scores[id]; return {session_id:id, relevance:s.relevance||null, education:s.education||null, neutrality:s.neutrality||null, timeliness:s.timeliness||null, recommendation:s.recommendation||null, recused:!!s.recused, comment:s.comment||null}; };
-let pending = 0;
+const payload = id => { const s = scores[id]; return {session_id:id, rating:s.rating||null, recommendation:s.recommendation||null, recused:!!s.recused, comment:s.comment||null}; };
 async function save(ids){
   ids.forEach(id => dirty.add(id));
   const name = $('rName').value.trim();
@@ -230,7 +193,7 @@ function setStatus(t, bad){ const el = $('saveStatus'); el.textContent = t; el.s
 
 function progress(){
   const n = sessions.filter(s => isDone(scores[s.id])).length;
-  $('pFill').style.width = (100*n/sessions.length) + '%';
+  $('pFill').style.width = (100*n/(sessions.length||1)) + '%';
   $('pText').textContent = `${n} of ${sessions.length} sessions finished`;
 }
 
@@ -240,7 +203,7 @@ $('saveAll').onclick = async () => {
   if (!ids.length){ $('finishMsg').textContent = 'Nothing to save yet.'; return; }
   const ok = await save(ids);
   const left = sessions.filter(s => !isDone(scores[s.id])).length;
-  $('finishMsg').textContent = !ok ? 'Save failed — please try again.' : left ? `Saved. ${left} session${left>1?'s are':' is'} not finished yet — use the "Not finished" filter to find them.` : 'All sessions scored and saved. Thank you!';
+  $('finishMsg').textContent = !ok ? 'Not saved — make sure your name is entered at the top.' : left ? `Saved. ${left} session${left>1?'s are':' is'} not finished yet — use the "Not finished" filter to find them.` : 'All sessions reviewed and saved. Thank you!';
 };
 window.addEventListener('beforeunload', e => { if (pending || dirty.size || $('saveStatus').textContent.startsWith('Unsaved')) { e.preventDefault(); e.returnValue = ''; } });
 </script>
